@@ -1,49 +1,75 @@
-import { type ButtonHTMLAttributes, type AnchorHTMLAttributes, type ReactNode } from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import {
+  ButtonHTMLAttributes,
+  AnchorHTMLAttributes,
+  ReactNode,
+} from "react";
 
-interface BaseButtonProps {
+type Variant = "primary" | "secondary" | "ghost";
+type Size = "sm" | "md" | "lg";
+
+interface BaseProps {
   children: ReactNode;
   className?: string;
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: Variant;
+  size?: Size;
 }
 
-interface AnchorProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'children'>, BaseButtonProps {
+interface LinkButtonProps
+  extends BaseProps,
+    Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "href"> {
   href: string;
 }
 
-interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>, BaseButtonProps {
+interface NativeButtonProps
+  extends BaseProps,
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   href?: never;
 }
 
+type Props = LinkButtonProps | NativeButtonProps;
+
 const variantClasses = {
-  primary: 'bg-teal-400 text-slate-950 shadow-[0_20px_60px_rgba(15,177,166,0.18)] hover:bg-teal-300',
-  secondary: 'bg-white/10 text-white border border-white/10 hover:bg-white/15',
-  ghost: 'bg-transparent text-teal-300 ring-1 ring-teal-400/30 hover:bg-white/5',
+  primary:
+    "bg-teal-400 text-slate-950 shadow-[0_20px_60px_rgba(15,177,166,0.18)] hover:bg-teal-300",
+  secondary:
+    "bg-white/10 text-white border border-white/10 hover:bg-white/15",
+  ghost:
+    "bg-transparent text-teal-300 ring-1 ring-teal-400/30 hover:bg-white/5",
 };
 
 const sizeClasses = {
-  sm: 'px-4 py-2 text-sm',
-  md: 'px-6 py-3 text-base',
-  lg: 'px-8 py-4 text-lg',
+  sm: "px-4 py-2 text-sm",
+  md: "px-6 py-3 text-base",
+  lg: "px-8 py-4 text-lg",
 };
 
-export function Button(props: ButtonProps | AnchorProps) {
-  const { children, className = '', variant = 'primary', size = 'md' } = props;
-  const classes = `inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
+export function Button(props: Props) {
+  const {
+    children,
+    className = "",
+    variant = "primary",
+    size = "md",
+  } = props;
 
-  if ('href' in props) {
-    const { href, ...anchorProps } = props;
+  const classes = `inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+
+  if ("href" in props) {
+    const { href, ...rest } = props;
+
     return (
-      <Link href={href as any} className={classes} {...anchorProps}>
+      <Link href={href} className={classes} {...rest}>
         {children}
       </Link>
     );
   }
 
-  const { type = 'button', ...buttonProps } = props as ButtonProps;
   return (
-    <button type={type} className={classes} {...buttonProps}>
+    <button
+      type={props.type ?? "button"}
+      className={classes}
+      {...props}
+    >
       {children}
     </button>
   );
