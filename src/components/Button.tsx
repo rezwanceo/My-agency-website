@@ -54,23 +54,27 @@ export function Button(props: Props) {
 
   const classes = `inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
-  if ("href" in props) {
-    const { href, ...rest } = props;
-
-    return (
-      <Link href={href} className={classes} {...rest}>
-        {children}
-      </Link>
-    );
-  }
+ if ("href" in props && typeof props.href === "string") {
+  const { href, target, rel, ...rest } = props;
 
   return (
-    <button
-      type={props.type ?? "button"}
-      className={classes}
-      {...props}
-    >
+    <Link href={href} className={classes} target={target} rel={rel} {...rest}>
       {children}
-    </button>
+    </Link>
+  );
+}
+
+  return (
+    const { type = "button", ...buttonProps } = props;
+
+return (
+  <button
+    type={type}
+    className={classes}
+    {...buttonProps}
+  >
+    {children}
+  </button>
+);
   );
 }
