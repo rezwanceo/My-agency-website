@@ -64,8 +64,7 @@ export function Button(props: Props) {
   );
 }
 
-  return (
-    const { type = "button", ...buttonProps } = props;
+const { type = "button", ...buttonProps } = props;
 
 return (
   <button
@@ -76,5 +75,4 @@ return (
     {children}
   </button>
 );
-  );
 }
